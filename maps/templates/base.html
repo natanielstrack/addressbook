@@ -28,14 +28,6 @@
             location.reload();
         }
 
-        function geocodeLatLng(geocoder, address, infowindow) {
-          var latlng = {lat: address.lat(), lng: address.lng()};
-          geocoder.geocode({'location': latlng}, function(results, status) {
-            console.log(status);
-            console.log(results);
-          });
-        }
-
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
               zoom: 2,
@@ -49,12 +41,7 @@
             {% endfor %}
             //Add listener
 
-            var geocoder = new google.maps.Geocoder;
-            var infowindow = new google.maps.InfoWindow;
-
             google.maps.event.addListener(map, 'click', function(event) {
-                geocodeLatLng(geocoder, event.latLng, infowindow);
-
                 $.ajax({
                   url: '/add',
                   method: "POST",
