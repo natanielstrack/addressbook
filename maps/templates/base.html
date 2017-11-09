@@ -28,6 +28,14 @@
             location.reload();
         }
 
+        function geocodeLatLng(geocoder, address, infowindow) {
+          var latlng = {lat: address.lat(), lng: address.lng()};
+          geocoder.geocode({'location': latlng}, function(results, status) {
+            console.log(status);
+            console.log(results);
+          });
+        }
+
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
               zoom: 2,
@@ -40,7 +48,13 @@
             });
             {% endfor %}
             //Add listener
+
+            var geocoder = new google.maps.Geocoder;
+            var infowindow = new google.maps.InfoWindow;
+
             google.maps.event.addListener(map, 'click', function(event) {
+                geocodeLatLng(geocoder, event.latLng, infowindow);
+
                 $.ajax({
                   url: '/add',
                   method: "POST",
@@ -52,7 +66,7 @@
         }
     </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUTq1gZDakz0JmCCajGnmu_zCWMiJUfhs&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPjH-lmhxW4LCPVtonAzySN5pHL4kTr4Y&callback=initMap">
     </script>
 
     <ul>
