@@ -41,6 +41,14 @@
             {% endfor %}
             //Add listener
 
+            var layer = new google.maps.FusionTablesLayer({
+            query: {
+              select: '\'Geocodable address\'',
+              from: '1z4oT18gGaoHWbnk08SV6hhOA99xC3OdheXulCjSW'
+            }
+            });
+            layer.setMap(map);
+            
             google.maps.event.addListener(map, 'click', function(event) {
                 $.ajax({
                   url: '/add',
