@@ -124,3 +124,5 @@ STATIC_URL = '/static/'
 
 # Always use IPython for shell_plus
 SHELL_PLUS = "ipython"
+
+GOOGLE_API_KEY = "AIzaSyBUTq1gZDakz0JmCCajGnmu_zCWMiJUfhs"

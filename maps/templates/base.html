@@ -1,7 +1,64 @@
-<h1>Hello</h1>
+<!DOCTYPE html>
+<html>
+  <head>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
+    <style>
+      #map {
+        width: 100%;
+        height: 400px;
+        background-color: grey;
+      }
+    </style>
+  </head>
+  <body>
+    {% csrf_token %}
+    <h1>Hello</h1>
+    <button onclick="deleteAdresses()">Clear</button>
+    <div id="map"></div>
+    <script>
+        function deleteAdresses() {
+            $.ajax({
+              url: '/delete',
+              method: "POST",
+              headers: { 'X-CSRFToken':'{{ csrf_token }}' }
+            });
+            location.reload();
+        }
 
-<ul>
-    {% for address in addresses %}
-        <li>({{ address.longitude }},{{ address.latitude }})</li>
-    {% endfor %}
-</ul>
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 2,
+              center: {lat: 0, lng: 0}
+            });
+            {% for address in addresses %}
+            var marker_{{ address.id }} = new google.maps.Marker({
+              position: {lat: {{ address.latitude }}, lng: {{ address.longitude }}},
+              map: map
+            });
+            {% endfor %}
+            //Add listener
+            google.maps.event.addListener(map, 'click', function(event) {
+                $.ajax({
+                  url: '/add',
+                  method: "POST",
+                  data: event.latLng.toJSON(),
+                  headers: { 'X-CSRFToken':'{{ csrf_token }}' }
+                });
+                location.reload();
+            });
+        }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUTq1gZDakz0JmCCajGnmu_zCWMiJUfhs&callback=initMap">
+    </script>
+
+    <ul>
+        {% for address in addresses %}
+            <li>({{ address.longitude }},{{ address.latitude }})</li>
+        {% endfor %}
+    </ul>
+  </body>
+</html>
