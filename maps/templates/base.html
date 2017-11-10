@@ -1,100 +1,19 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <script
-      src="https://code.jquery.com/jquery-3.2.1.min.js"
-      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-      crossorigin="anonymous"></script>
-    <script src="https://apis.google.com/js/api.js"></script>
+    <head>
+        <script
+          src="https://code.jquery.com/jquery-3.2.1.min.js"
+          integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+          crossorigin="anonymous"></script>
+        <script src="https://apis.google.com/js/api.js"></script>
+        {% block style %}
+        {% endblock %}
+    </head>
+    <body>
 
-    <style>
-      #map {
-        width: 100%;
-        height: 400px;
-        background-color: grey;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Address Book</h1>
-    <button onclick="deleteAdresses()">Delete all addresses</button>
-    <div id="map"></div>
-    <div id="addressesList"></div>
+    {% block content %}
+    {% endblock %}
 
-    <script>
-        function deleteAdresses() {
-            $.ajax({
-                url: '/delete',
-                method: "POST",
-                headers: { 'X-CSRFToken':'{{ csrf_token }}' }
-            });
-            location.reload();
-        }
-
-        function showLocations(map, results){
-            htmlList = '';
-            results.map(function(location) {
-                lat = parseFloat(location[2]);
-                lng = parseFloat(location[1]);
-                address = location[3];
-                var marker = new google.maps.Marker({
-                    position: {lat: lat, lng: lng},
-                    map: map
-                });
-                htmlList += `<li>(${lat}, ${lng}): ${address}</li>`;
-            });
-
-            htmlList = `<ul>${htmlList}</ul>`;
-            $('#addressesList').html(htmlList);
-        }
-
-        function getAndShowLocations(map){
-            $.ajax({
-                url: '/list',
-                method: "POST",
-                headers: { 'X-CSRFToken':'{{ csrf_token }}' }
-            }).done(function( data ) {
-                showLocations(map, data.results);
-          });
-        }
-
-        function addFusiontablesLayer(map){
-            var layer = new google.maps.FusionTablesLayer({
-                query: {
-                    select: '\'Geocodable address\'',
-                    from: '1z4oT18gGaoHWbnk08SV6hhOA99xC3OdheXulCjSW'
-                }
-            });
-            layer.setMap(map);
-        }
-
-        function addMapListeners(map){
-            google.maps.event.addListener(map, 'click', function(event) {
-                $.ajax({
-                    url: '/add',
-                    method: "POST",
-                    data: event.latLng.toJSON(),
-                    headers: { 'X-CSRFToken':'{{ csrf_token }}' }
-                }).done(function( data ) {
-                    showLocations(map, data.results);
-                }).fail(function( data ) {
-                    alert(data.statusText);
-                });
-            });
-        }
-
-        function initMap() {
-            var map = new google.maps.Map(document.getElementById('map'), {
-              zoom: 15,
-              center: {lat: 47.3877746, lng: 8.5179263}
-            });
-            getAndShowLocations(map);
-            addFusiontablesLayer(map);
-            addMapListeners(map);
-        }
-    </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPjH-lmhxW4LCPVtonAzySN5pHL4kTr4Y&callback=initMap">
-    </script>
+    {% include 'scripts.html' %}
   </body>
 </html>

@@ -9,7 +9,7 @@ from maps.models import Address
 
 
 class HomeView(TemplateView):
-    template_name = "base.html"
+    template_name = "home.html"
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
