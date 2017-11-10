@@ -19,10 +19,7 @@
     <h1>Address Book</h1>
     <button onclick="deleteAdresses()">Delete all addresses</button>
     <div id="map"></div>
-
-
     <div id="addressesList"></div>
-
 
     <script>
         function deleteAdresses() {
@@ -34,29 +31,30 @@
             location.reload();
         }
 
-        function setMarkers(map, results){
+        function showLocations(map, results){
             htmlList = '';
             results.map(function(location) {
                 lat = parseFloat(location[2]);
                 lng = parseFloat(location[1]);
+                address = location[3];
                 var marker = new google.maps.Marker({
                     position: {lat: lat, lng: lng},
                     map: map
                 });
-                htmlList += `<li>${lat}, ${lng}</li>`;
+                htmlList += `<li>(${lat}, ${lng}): ${address}</li>`;
             });
 
             htmlList = `<ul>${htmlList}</ul>`;
             $('#addressesList').html(htmlList);
         }
 
-        function getAndSetMarkers(map){
+        function getAndShowLocations(map){
             $.ajax({
                 url: '/list',
                 method: "POST",
                 headers: { 'X-CSRFToken':'{{ csrf_token }}' }
             }).done(function( data ) {
-                setMarkers(map, data.results);
+                showLocations(map, data.results);
           });
         }
 
@@ -78,7 +76,7 @@
                     data: event.latLng.toJSON(),
                     headers: { 'X-CSRFToken':'{{ csrf_token }}' }
                 }).done(function( data ) {
-                    setMarkers(map, data.results);
+                    showLocations(map, data.results);
                 }).fail(function( data ) {
                     alert(data.statusText);
                 });
@@ -90,7 +88,7 @@
               zoom: 15,
               center: {lat: 47.3877746, lng: 8.5179263}
             });
-            getAndSetMarkers(map);
+            getAndShowLocations(map);
             addFusiontablesLayer(map);
             addMapListeners(map);
         }
