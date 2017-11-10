@@ -125,8 +125,4 @@ STATIC_URL = '/static/'
 # Always use IPython for shell_plus
 SHELL_PLUS = "ipython"
 
-GOOGLE_MAPS_API_KEY = "AIzaSyBUTq1gZDakz0JmCCajGnmu_zCWMiJUfhs"
 GOOGLE_GEO_API_KEY = 'AIzaSyBPjH-lmhxW4LCPVtonAzySN5pHL4kTr4Y'
-GOOGLE_GEO_URL = '/maps/api/place/nearbysearch/json'
-
-GOOGLE_APPLICATION_CREDENTIALS = 'AddressBook-777ffbfa3cdb.json'

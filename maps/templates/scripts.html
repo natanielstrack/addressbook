@@ -40,7 +40,7 @@
             var layer = new google.maps.FusionTablesLayer({
                 query: {
                     select: '\'Geocodable address\'',
-                    from: '1z4oT18gGaoHWbnk08SV6hhOA99xC3OdheXulCjSW'
+                    from: '{{ google_geo_api_key }}'
                 }
             });
             layer.setMap(map);
@@ -72,6 +72,6 @@
         }
     </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPjH-lmhxW4LCPVtonAzySN5pHL4kTr4Y&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key={{ google_geo_api_key }}&callback=initMap">
     </script>
 {% endblock %}

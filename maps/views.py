@@ -14,6 +14,7 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
         context['addresses'] = Address.objects.all()
+        context['google_geo_api_key'] = settings.GOOGLE_GEO_API_KEY
         return context
 
 
@@ -45,9 +46,11 @@ class AddAddress(View):
 class DeleteAddress(View):
 
     def post(self, request, *args, **kwargs):
-        Address.objects.all().delete()
-
-        return HttpResponse("test")
+        try:
+            Address.objects.all().delete()
+            return HttpResponse(status=200)
+        except:
+            return HttpResponse(status=404)
 
 
 class ListAddress(View):
