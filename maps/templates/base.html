@@ -5,6 +5,8 @@
       src="https://code.jquery.com/jquery-3.2.1.min.js"
       integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
       crossorigin="anonymous"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+
     <style>
       #map {
         width: 100%;
@@ -14,60 +16,87 @@
     </style>
   </head>
   <body>
-    {% csrf_token %}
-    <h1>Hello</h1>
-    <button onclick="deleteAdresses()">Clear</button>
+    <h1>Address Book</h1>
+    <button onclick="deleteAdresses()">Delete all addresses</button>
     <div id="map"></div>
+
+
+    <div id="addressesList"></div>
+
+
     <script>
         function deleteAdresses() {
             $.ajax({
-              url: '/delete',
-              method: "POST",
-              headers: { 'X-CSRFToken':'{{ csrf_token }}' }
+                url: '/delete',
+                method: "POST",
+                headers: { 'X-CSRFToken':'{{ csrf_token }}' }
             });
             location.reload();
         }
 
-        function initMap() {
-            var map = new google.maps.Map(document.getElementById('map'), {
-              zoom: 2,
-              center: {lat: 0, lng: 0}
+        function setMarkers(map, results){
+            htmlList = '';
+            results.map(function(location) {
+                lat = parseFloat(location[2]);
+                lng = parseFloat(location[1]);
+                var marker = new google.maps.Marker({
+                    position: {lat: lat, lng: lng},
+                    map: map
+                });
+                htmlList += `<li>${lat}, ${lng}</li>`;
             });
-            {% for address in addresses %}
-            var marker_{{ address.id }} = new google.maps.Marker({
-              position: {lat: {{ address.latitude }}, lng: {{ address.longitude }}},
-              map: map
-            });
-            {% endfor %}
-            //Add listener
 
+            htmlList = `<ul>${htmlList}</ul>`;
+            $('#addressesList').html(htmlList);
+        }
+
+        function getAndSetMarkers(map){
+            $.ajax({
+                url: '/list',
+                method: "POST",
+                headers: { 'X-CSRFToken':'{{ csrf_token }}' }
+            }).done(function( data ) {
+                setMarkers(map, data.results);
+          });
+        }
+
+        function addFusiontablesLayer(map){
             var layer = new google.maps.FusionTablesLayer({
-            query: {
-              select: '\'Geocodable address\'',
-              from: '1z4oT18gGaoHWbnk08SV6hhOA99xC3OdheXulCjSW'
-            }
+                query: {
+                    select: '\'Geocodable address\'',
+                    from: '1z4oT18gGaoHWbnk08SV6hhOA99xC3OdheXulCjSW'
+                }
             });
             layer.setMap(map);
-            
+        }
+
+        function addMapListeners(map){
             google.maps.event.addListener(map, 'click', function(event) {
                 $.ajax({
-                  url: '/add',
-                  method: "POST",
-                  data: event.latLng.toJSON(),
-                  headers: { 'X-CSRFToken':'{{ csrf_token }}' }
+                    url: '/add',
+                    method: "POST",
+                    data: event.latLng.toJSON(),
+                    headers: { 'X-CSRFToken':'{{ csrf_token }}' }
+                }).done(function( data ) {
+                    setMarkers(map, data.results);
+                }).fail(function( data ) {
+                    alert(data.statusText);
                 });
-                location.reload();
             });
+        }
+
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 15,
+              center: {lat: 47.3877746, lng: 8.5179263}
+            });
+            getAndSetMarkers(map);
+            addFusiontablesLayer(map);
+            addMapListeners(map);
         }
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPjH-lmhxW4LCPVtonAzySN5pHL4kTr4Y&callback=initMap">
     </script>
-
-    <ul>
-        {% for address in addresses %}
-            <li>({{ address.longitude }},{{ address.latitude }})</li>
-        {% endfor %}
-    </ul>
   </body>
 </html>
