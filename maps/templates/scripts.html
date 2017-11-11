@@ -48,6 +48,7 @@
 
         function addMapListeners(map){
             google.maps.event.addListener(map, 'click', function(event) {
+                $('#loader').css('display', 'block');
                 $.ajax({
                     url: '/add',
                     method: "POST",
@@ -57,6 +58,8 @@
                     showLocations(map, data.results);
                 }).fail(function( data ) {
                     alert(data.statusText);
+                }).always(function( data ){
+                    $('#loader').css('display', 'none');
                 });
             });
         }

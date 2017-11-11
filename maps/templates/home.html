@@ -2,17 +2,64 @@
 
 {% block style %}
     <style>
-      #map {
-        width: 100%;
-        height: 400px;
-        background-color: grey;
-      }
+        #map {
+            width: 100%;
+            height: 400px;
+            background-color: grey;
+        }
+
+        #loader.box {
+            width: 300px;
+            position: fixed;
+            margin-left: 35%;
+            margin-top: 25%;
+            z-index: 1;
+        }
+
+        #loader .icon {
+            border: 8px solid #aaaaaa;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            float: left;
+        }
+
+        #loader .message {
+            float: right;
+            }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 {% endblock %}
 
 {% block content %}
-    <h1>Address Book</h1>
-    <button onclick="deleteAdresses()">Delete all addresses</button>
-    <div id="map"></div>
-    <div id="addressesList"></div>
+    <div id="loader" class="alert alert-success box" style="display: none;">
+        <div class="icon"></div>
+        <span class="message">
+            Please, be patiente.<br>
+            Sometimes Google Places is slow.
+        </span>
+    </div>
+    <div class="container">
+        <div class="row">
+            <h1>Address Book</h1>
+            <span>This application allows you to save your favorites locations on a map</span>
+            <h4>Instructions</h4>
+            <ul>
+                <li>Click on the map to save an address</li>
+                <li>If there's no address nearby, the point will not be saved</li>
+                <li>Locations from <a href="https://fusiontables.google.com/data?docid={{ fusion_table_id }}" target="blank">this Fusiontable</a> are loaded also</li>
+            </ul>
+            <button class="btn" onclick="deleteAdresses()">Delete all addresses</button>
+        </div>
+        <div class="row">
+            <div id="map"></div>
+            <div id="addressesList"></div>
+        </div>
+    </div>
 {% endblock %}
