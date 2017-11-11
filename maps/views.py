@@ -15,6 +15,7 @@ class HomeView(TemplateView):
         context = super(HomeView, self).get_context_data(**kwargs)
         context['addresses'] = Address.objects.all()
         context['google_geo_api_key'] = settings.GOOGLE_GEO_API_KEY
+        context['fusion_table_id'] = settings.FUSION_TABLE_ID
         return context
 
 

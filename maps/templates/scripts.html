@@ -40,7 +40,7 @@
             var layer = new google.maps.FusionTablesLayer({
                 query: {
                     select: '\'Geocodable address\'',
-                    from: '{{ google_geo_api_key }}'
+                    from: '{{ fusion_table_id }}'
                 }
             });
             layer.setMap(map);
