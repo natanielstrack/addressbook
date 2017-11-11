@@ -24,7 +24,8 @@ class AddAddress(View):
     def _get_address(self, lat, lng):
         try:
             gmaps = googlemaps.Client(key=settings.GOOGLE_GEO_API_KEY)
-            reverse_geocode_result = gmaps.reverse_geocode((lat, lng))
+            reverse_geocode_result = gmaps.reverse_geocode(
+                (lat, lng), location_type='ROOFTOP')
             return reverse_geocode_result[0]['formatted_address']
         except Exception as error:
             print(error)
