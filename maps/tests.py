@@ -31,7 +31,7 @@ class ListAddressApiTestCase(TestCase):
 
 class AddAddressApiTestCase(TestCase):
 
-    @patch('maps.views.AddAddress._get_address')
+    @patch('maps.utils.PlacesHandler.get_address')
     def test_adding_address(self, get_address):
         get_address.return_value = 'some street'
         client = Client()

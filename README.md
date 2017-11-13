@@ -10,6 +10,7 @@ This application allows you to save your favorites locations on a map.
 Application wrote in Python with Django, follow the instructions bellow to have your environment set and your server running.
 - Install Python 3
 - Clone this repository
+- Update the `# Fusion Table Permissions` session on `settings.py` (or ask me the key file to access this table)
 - run `./startup.sh`
 
 This script will
@@ -20,4 +21,4 @@ This script will
 - Start a local server
 
 ## Todo
-- Save selected addresses on the related Fusiontable
+- Handle user sessions: save a session identifier in both local database and Fusiontables in order to load only the actual session addresses

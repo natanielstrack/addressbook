@@ -1,42 +1,6 @@
 {% block content %}
     <script>
-        function deleteAdresses() {
-            $.ajax({
-                url: '/delete',
-                method: "POST",
-                headers: { 'X-CSRFToken':'{{ csrf_token }}' }
-            });
-            location.reload();
-        }
-
-        function showLocations(map, results){
-            htmlList = '';
-            results.map(function(location) {
-                lat = parseFloat(location[2]);
-                lng = parseFloat(location[1]);
-                address = location[3];
-                var marker = new google.maps.Marker({
-                    position: {lat: lat, lng: lng},
-                    map: map
-                });
-                htmlList += `<li>(${lat}, ${lng}): ${address}</li>`;
-            });
-
-            htmlList = `<ul>${htmlList}</ul>`;
-            $('#addressesList').html(htmlList);
-        }
-
-        function getAndShowLocations(map){
-            $.ajax({
-                url: '/list',
-                method: "POST",
-                headers: { 'X-CSRFToken':'{{ csrf_token }}' }
-            }).done(function( data ) {
-                showLocations(map, data.results);
-          });
-        }
-
-        function addFusiontablesLayer(map){
+        function addFusiontablesLayer(map) {
             var layer = new google.maps.FusionTablesLayer({
                 query: {
                     select: '\'Geocodable address\'',
@@ -46,21 +10,48 @@
             layer.setMap(map);
         }
 
-        function addMapListeners(map){
+        function showLocations(map, results) {
+            htmlList = '';
+            results.map(function(location) {
+                lat = parseFloat(location[2]);
+                lng = parseFloat(location[1]);
+                address = location[3];
+
+                htmlList += `<li>(${lat}, ${lng}): ${address}</li>`;
+            });
+
+            htmlList = `<ul>${htmlList}</ul>`;
+            $('#addressesList').html(htmlList);
+            addFusiontablesLayer(map);
+        }
+
+        function handleRequests(map, url, data='') {
+            $('#loader').css('display', 'block');
+            $.ajax({
+                url: url,
+                method: "POST",
+                data: data,
+                headers: { 'X-CSRFToken':'{{ csrf_token }}' }
+            }).done(function( data ) {
+                showLocations(map, data.results);
+            }).fail(function( data ) {
+                alert(data.statusText);
+            }).always(function( data ) {
+                $('#loader').css('display', 'none');
+            });
+        }
+
+        function deleteAdresses(map) {
+            handleRequests(map, '/delete');
+        }
+
+        function listLocations(map) {
+            handleRequests(map, '/list');
+        }
+
+        function addMapListeners(map) {
             google.maps.event.addListener(map, 'click', function(event) {
-                $('#loader').css('display', 'block');
-                $.ajax({
-                    url: '/add',
-                    method: "POST",
-                    data: event.latLng.toJSON(),
-                    headers: { 'X-CSRFToken':'{{ csrf_token }}' }
-                }).done(function( data ) {
-                    showLocations(map, data.results);
-                }).fail(function( data ) {
-                    alert(data.statusText);
-                }).always(function( data ){
-                    $('#loader').css('display', 'none');
-                });
+                handleRequests(map, '/add', event.latLng.toJSON());
             });
         }
 
@@ -69,8 +60,7 @@
               zoom: 15,
               center: {lat: 47.3877746, lng: 8.5179263}
             });
-            getAndShowLocations(map);
-            addFusiontablesLayer(map);
+            listLocations(map);
             addMapListeners(map);
         }
     </script>

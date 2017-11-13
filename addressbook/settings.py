@@ -117,6 +117,14 @@ USE_L10N = True
 USE_TZ = True
 
 
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
@@ -126,4 +134,9 @@ STATIC_URL = '/static/'
 SHELL_PLUS = "ipython"
 
 GOOGLE_GEO_API_KEY = 'AIzaSyBPjH-lmhxW4LCPVtonAzySN5pHL4kTr4Y'
+
+FUSION_TABLES_URL = 'https://www.googleapis.com/fusiontables/v2/query'
+
+# Fusion Table Permissions
 FUSION_TABLE_ID = '1z4oT18gGaoHWbnk08SV6hhOA99xC3OdheXulCjSW'
+GOOGLE_SERVICE_ACCOUNT_FILE = 'AddressBook-65692a3c71c7.json'
