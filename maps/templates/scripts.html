@@ -1,17 +1,20 @@
 {% block content %}
     <script>
-        function addFusiontablesLayer(map) {
+        let addressMap = Object;
+
+        function addFusiontablesLayer() {
             var layer = new google.maps.FusionTablesLayer({
                 query: {
                     select: '\'Geocodable address\'',
                     from: '{{ fusion_table_id }}'
                 }
             });
-            layer.setMap(map);
+            layer.setMap(addressMap);
         }
 
-        function showLocations(map, results) {
+        function showLocations(results=[]) {
             htmlList = '';
+
             results.map(function(location) {
                 lat = parseFloat(location[2]);
                 lng = parseFloat(location[1]);
@@ -22,10 +25,10 @@
 
             htmlList = `<ul>${htmlList}</ul>`;
             $('#addressesList').html(htmlList);
-            addFusiontablesLayer(map);
+            addFusiontablesLayer();
         }
 
-        function handleRequests(map, url, data='') {
+        function handleRequests(url, data='') {
             $('#loader').css('display', 'block');
             $.ajax({
                 url: url,
@@ -33,7 +36,7 @@
                 data: data,
                 headers: { 'X-CSRFToken':'{{ csrf_token }}' }
             }).done(function( data ) {
-                showLocations(map, data.results);
+                showLocations(data.results);
             }).fail(function( data ) {
                 alert(data.statusText);
             }).always(function( data ) {
@@ -41,27 +44,27 @@
             });
         }
 
-        function deleteAdresses(map) {
-            handleRequests(map, '/delete');
+        function deleteAdresses() {
+            handleRequests('/delete');
         }
 
-        function listLocations(map) {
-            handleRequests(map, '/list');
+        function listLocations() {
+            handleRequests('/list');
         }
 
-        function addMapListeners(map) {
-            google.maps.event.addListener(map, 'click', function(event) {
-                handleRequests(map, '/add', event.latLng.toJSON());
+        function addMapListeners() {
+            google.maps.event.addListener(addressMap, 'click', function(event) {
+                handleRequests('/add', event.latLng.toJSON());
             });
         }
 
         function initMap() {
-            var map = new google.maps.Map(document.getElementById('map'), {
+            addressMap = new google.maps.Map(document.getElementById('map'), {
               zoom: 15,
               center: {lat: 47.3877746, lng: 8.5179263}
             });
-            listLocations(map);
-            addMapListeners(map);
+            listLocations();
+            addMapListeners();
         }
     </script>
     <script async defer
