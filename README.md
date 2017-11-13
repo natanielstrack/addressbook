@@ -4,7 +4,7 @@ This application allows you to save your favorites locations on a map.
 ## How to use
 - Click on the map to save an address
 - If there's no address nearby, the point will not be saved
-- Locations from [this Fusiontable](https://fusiontables.google.com/data?docid=1z4oT18gGaoHWbnk08SV6hhOA99xC3OdheXulCjSW) are loaded also
+- Locations are saved and loaded in [this Fusiontable](https://fusiontables.google.com/data?docid=1z4oT18gGaoHWbnk08SV6hhOA99xC3OdheXulCjSW)
 
 ## How to install
 Application wrote in Python with Django, follow the instructions bellow to have your environment set and your server running.
@@ -22,3 +22,4 @@ This script will
 
 ## Todo
 - Handle user sessions: save a session identifier in both local database and Fusiontables in order to load only the actual session addresses
+- Replace manual rest implementation for Django-rest framework
