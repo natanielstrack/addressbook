@@ -1,9 +1,12 @@
-from django.conf.urls import url
+from rest_framework import routers
+
+from django.conf.urls import url, include
 from maps import views
+
+router = routers.DefaultRouter()
+router.register(r'address', views.AddressViewSet)
 
 urlpatterns = [
     url(r'^$', views.HomeView.as_view(), name='home'),
-    url(r'^add$', views.AddAddress.as_view(), name='addaddress'),
-    url(r'^delete$', views.DeleteAddress.as_view(), name='delete'),
-    url(r'^list$', views.ListAddress.as_view(), name='delete'),
+    url(r'^api/', include(router.urls)),
 ]

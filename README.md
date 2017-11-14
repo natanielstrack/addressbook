@@ -22,4 +22,3 @@ This script will
 
 ## Todo
 - Handle user sessions: save a session identifier in both local database and Fusiontables in order to load only the actual session addresses
-- Replace manual rest implementation for Django-rest framework

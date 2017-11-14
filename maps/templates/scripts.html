@@ -1,6 +1,10 @@
 {% block content %}
     <script>
         let addressMap = Object;
+        const list = 'GET';
+        const add = 'POST';
+        const del = 'DELETE';
+        let addressList = [];
 
         function addFusiontablesLayer() {
             var layer = new google.maps.FusionTablesLayer({
@@ -12,13 +16,13 @@
             layer.setMap(addressMap);
         }
 
-        function showLocations(results=[]) {
+        function showLocations() {
             htmlList = '';
 
-            results.map(function(location) {
-                lat = parseFloat(location[2]);
-                lng = parseFloat(location[1]);
-                address = location[3];
+            addressList.map(function(location) {
+                lat = parseFloat(location['latitude']);
+                lng = parseFloat(location['longitude']);
+                address = location['address'];
 
                 htmlList += `<li>(${lat}, ${lng}): ${address}</li>`;
             });
@@ -28,33 +32,37 @@
             addFusiontablesLayer();
         }
 
-        function handleRequests(url, data='') {
+        function handleRequests(method, data='') {
             $('#loader').css('display', 'block');
             $.ajax({
-                url: url,
-                method: "POST",
+                url: '{{ root_url }}',
+                method: method,
                 data: data,
                 headers: { 'X-CSRFToken':'{{ csrf_token }}' }
             }).done(function( data ) {
-                showLocations(data.results);
+                addressList = method === del ? [] : addressList.concat(data);
+                showLocations();
             }).fail(function( data ) {
-                alert(data.statusText);
+                alert(data.responseJSON.toString());
             }).always(function( data ) {
                 $('#loader').css('display', 'none');
             });
         }
 
         function deleteAdresses() {
-            handleRequests('/delete');
+            handleRequests(del);
         }
 
         function listLocations() {
-            handleRequests('/list');
+            handleRequests(list);
         }
 
         function addMapListeners() {
             google.maps.event.addListener(addressMap, 'click', function(event) {
-                handleRequests('/add', event.latLng.toJSON());
+                handleRequests(add, {
+                    latitude: parseFloat(event.latLng.lat().toFixed(6)),
+                    longitude: parseFloat(event.latLng.lng().toFixed(6)),
+                });
             });
         }
 
