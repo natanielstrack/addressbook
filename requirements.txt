@@ -5,7 +5,7 @@ chardet==3.0.4
 decorator==4.1.2
 Django==1.11.7
 django-extensions==1.9.7
-djangorestframework==3.7.3
+djangorestframework==3.11.2
 gcloud==0.18.3
 google==1.9.3
 google-api-python-client==1.6.4
